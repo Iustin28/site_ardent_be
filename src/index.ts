@@ -1,0 +1,30 @@
+import express from "express"
+import dotenv from "dotenv"
+import cors from "cors"
+import { messagesRouter } from "./routes/messages"
+import { db } from "./db"
+
+dotenv.config()
+const app = express()
+
+app.use(cors())
+app.use(express.json())
+
+app.use("/api/messages", messagesRouter)
+
+const PORT = process.env.PORT || 4000
+
+async function checkDatabaseConnection() {
+    try {
+        await db.execute(`SELECT 1`);
+        console.log("✅ Database connected successfully!");
+    } catch (error) {
+        console.error("❌ Failed to connect to the database:", error);
+        process.exit(1); // stop the server if DB connection fails
+    }
+}
+
+checkDatabaseConnection();
+
+
+app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`))
