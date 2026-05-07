@@ -1,19 +1,21 @@
 import { defineConfig } from "drizzle-kit";
 
-console.log(process.env.PG_DATABASE!)
+const connectionString = process.env.DATABASE_URL;
 
 export default defineConfig({
   schema: "./src/schema.ts",
   out: "./drizzle",
   dialect: "postgresql",
-  dbCredentials: {
-    host: process.env.PG_HOST!,
-    port: Number(process.env.PG_PORT),
-    user: process.env.PG_USER!,
-    password: process.env.PG_PASS!,
-    database: process.env.PG_DATABASE!,
-    ssl: false, 
-  },
+  dbCredentials: connectionString
+    ? { url: connectionString }
+    : {
+        host: process.env.PG_HOST!,
+        port: Number(process.env.PG_PORT),
+        user: process.env.PG_USER!,
+        password: process.env.PG_PASS!,
+        database: process.env.PG_DATABASE!,
+        ssl: { rejectUnauthorized: false },
+      },
 });
 
 
